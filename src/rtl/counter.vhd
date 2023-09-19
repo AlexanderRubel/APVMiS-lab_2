@@ -53,34 +53,37 @@ architecture Behavioral of counter is
     signal cntr : unsigned(3 downto 0);
     signal RCO : std_logic;
 begin
-    Q_o    <= cntr when OE_ni = '0' else "0000"; 
+    Q_o    <= cntr when OE_ni = '0' else "ZZZZ"; 
     RCO_no <= RCO;
     
     process (all)
     begin
         if (ACLR_ni = '0') then
-            cntr <= "0000" after 1 ns;
+            cntr <= "0000";
         elsif (CLK_i'event and CLK_i='1') then
             if (SCLR_ni = '0') then 
-                cntr <= "0000" after 1 ns;
+                cntr <= "0000";
             elsif (LOAD_ni = '0') then
-                cntr <= Data_i after 1 ns;
+                cntr <= Data_i;
             elsif (ENT_ni = '0' and ENP_ni = '0') then
                 if (UD_i = '1') then
-                    cntr <= cntr + 1  after 1 ns;
+                    cntr <= cntr + 1 ;
                 elsif (UD_i = '0') then
-                    cntr <= cntr - 1 after 1 ns;
+                    cntr <= cntr - 1;
                 end if;
             end if;
         end if;
     end process;
 
     process (all)
+        variable zero_cond : std_logic;
     begin
+        zero_cond := '1' when ((UD_i = '1' and cntr = "1111") 
+                        or (UD_i = '0' and cntr = "0000")) else '0';
+
         if (ENT_ni = '1') then
             RCO <= '1';
-        elsif ((UD_i = '1' and cntr = "1111") 
-              or (UD_i = '0' and cntr = "0000")) then
+        elsif (zero_cond = '1') then
             RCO <= '0';
         else
             RCO <= '1';
