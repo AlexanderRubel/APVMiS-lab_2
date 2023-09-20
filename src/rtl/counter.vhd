@@ -1,21 +1,21 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
+-- Company:
+-- Engineer:
+--
 -- Create Date: 16.09.2023 18:04:28
--- Design Name: 
+-- Design Name:
 -- Module Name: counter - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
+-- Project Name:
+-- Target Devices:
+-- Tool Versions:
+-- Description:
+--
+-- Dependencies:
+--
 -- Revision:
 -- Revision 0.01 - File Created
 -- Additional Comments:
--- 
+--
 ----------------------------------------------------------------------------------
 
 
@@ -46,30 +46,38 @@ entity counter is
         CCO_no  : out std_logic;
         RCO_no  : out std_logic;
         Q_o     : out unsigned(3 downto 0)
-    );  
+    );
 end counter;
 
 architecture Behavioral of counter is
     signal cntr : unsigned(3 downto 0);
     signal RCO : std_logic;
 begin
-    Q_o    <= cntr when OE_ni = '0' else "ZZZZ"; 
+    Q_o    <= cntr when OE_ni = '0' else "ZZZZ";
     RCO_no <= RCO;
-    
+
     process (all)
     begin
         if (ACLR_ni = '0') then
             cntr <= "0000";
         elsif (CLK_i'event and CLK_i='1') then
-            if (SCLR_ni = '0') then 
+            if (SCLR_ni = '0') then
                 cntr <= "0000";
             elsif (LOAD_ni = '0') then
                 cntr <= Data_i;
             elsif (ENT_ni = '0' and ENP_ni = '0') then
                 if (UD_i = '1') then
-                    cntr <= cntr + 1 ;
+                    if (cntr = "1001") then
+                        cntr <= "0000";
+                    else
+                        cntr <= cntr + 1;
+                    end if;
                 elsif (UD_i = '0') then
-                    cntr <= cntr - 1;
+                    if (cntr = "0000") then
+                        cntr <= "1001";
+                    else
+                        cntr <= cntr - 1;
+                    end if;
                 end if;
             end if;
         end if;
@@ -78,7 +86,7 @@ begin
     process (all)
         variable zero_cond : std_logic;
     begin
-        zero_cond := '1' when ((UD_i = '1' and cntr = "1111") 
+        zero_cond := '1' when ((UD_i = '1' and cntr = "1001")
                         or (UD_i = '0' and cntr = "0000")) else '0';
 
         if (ENT_ni = '1') then
@@ -93,7 +101,7 @@ begin
     process (all)
     begin
         if (CLK_i = '0' and ENP_ni = '0' and ENT_ni = '0') then
-            CCO_no <= RCO; 
+            CCO_no <= RCO;
         else
             CCO_no <= '1';
         end if;
