@@ -1,21 +1,21 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
+-- Company:
+-- Engineer:
+--
 -- Create Date: 17.09.2023 12:37:43
--- Design Name: 
+-- Design Name:
 -- Module Name: testbench - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
+-- Project Name:
+-- Target Devices:
+-- Tool Versions:
+-- Description:
+--
+-- Dependencies:
+--
 -- Revision:
 -- Revision 0.01 - File Created
 -- Additional Comments:
--- 
+--
 ----------------------------------------------------------------------------------
 
 
@@ -46,42 +46,51 @@ architecture Behavioral of testbench is
             SCLR_ni : in  std_logic;
             LOAD_ni : in  std_logic;
             ACLR_ni : in  std_logic;
-            Data_i  : in  unsigned(3 downto 0);
-    
-            CCO_no  : out std_logic;
-            RCO_no  : out std_logic;
-            Q_o     : out unsigned(3 downto 0)
+            Data_i  : in  std_logic_vector(3 downto 0);
+
+            CCO_no_0  : out std_logic;
+            RCO_no_0  : out std_logic;
+            Q_o_0     : out unsigned(3 downto 0);
+            CCO_no_1  : out std_logic;
+            RCO_no_1  : out std_logic;
+            Q_o_1     : out std_logic_vector(3 downto 0)
         );
     end component;
-    signal CLK  : std_logic := '0';
-    signal OE   : std_logic;
-    signal UD   : std_logic;
-    signal ENT  : std_logic;
-    signal ENP  : std_logic;
-    signal SCLR : std_logic;
-    signal LOAD : std_logic;
-    signal ACLR : std_logic;
-    signal Data : unsigned(3 downto 0);
-    signal CCO  : std_logic;
-    signal RCO  : std_logic;
-    signal Q    : unsigned(3 downto 0);
+    signal CLK    : std_logic := '0';
+    signal OE     : std_logic;
+    signal UD     : std_logic;
+    signal ENT    : std_logic;
+    signal ENP    : std_logic;
+    signal SCLR   : std_logic;
+    signal LOAD   : std_logic;
+    signal ACLR   : std_logic;
+    signal Data   : std_logic_vector(3 downto 0);
+    signal CCO_0  : std_logic;
+    signal RCO_0  : std_logic;
+    signal Q_0    : unsigned(3 downto 0);
+    signal CCO_1  : std_logic;
+    signal RCO_1  : std_logic;
+    signal Q_1    : std_logic_vector(3 downto 0);
 
     constant PERIOD : time := 10 ns;
 begin
-    u_top_0 : top 
+    u_top_0 : top
     port map (
-        CLK_i   => CLK,
-        OE_ni   => OE,
-        UD_i    => UD,
-        ENT_ni  => ENT,
-        ENP_ni  => ENP,
-        SCLR_ni => SCLR,
-        LOAD_ni => LOAD,
-        ACLR_ni => ACLR,
-        Data_i  => Data,
-        CCO_no  => CCO,
-        RCO_no  => RCO,
-        Q_o     => Q
+        CLK_i    => CLK,
+        OE_ni    => OE,
+        UD_i     => UD,
+        ENT_ni   => ENT,
+        ENP_ni   => ENP,
+        SCLR_ni  => SCLR,
+        LOAD_ni  => LOAD,
+        ACLR_ni  => ACLR,
+        Data_i   => Data,
+        CCO_no_0 => CCO_0,
+        RCO_no_0 => RCO_0,
+        Q_o_0    => Q_0,
+        CCO_no_1 => CCO_1,
+        RCO_no_1 => RCO_1,
+        Q_o_1    => Q_1
     );
 
     CLK <= not CLK after PERIOD/2;
@@ -98,8 +107,8 @@ begin
         Data <= "0000";
         wait for PERIOD*3;
         ACLR <= '1';
-        wait for PERIOD*3;
-        Data <= "1011";
+        wait for PERIOD*20;
+        Data <= "0011";
         wait for PERIOD/2;
         SCLR <= '0';
         wait for PERIOD/2;
