@@ -75,9 +75,9 @@ begin
     process (all)
     begin
         if (ACLR_ni = '0') then
-            regs_array <= "0000";
+            regs_array <= "0000"; --after 1 ns;
         elsif (CLK_i'event and CLK_i='1') then
-            regs_array <= or_data_bus;
+            regs_array <= or_data_bus; --after 1 ns;
         end if;
     end process;
 
@@ -131,19 +131,11 @@ begin
     and_rco_0      <= UD_i and and_rco_common;
     and_rco_1      <= (not UD_i) and and_rco_common and count_UD_bus(1)
                         and count_UD_bus(2);
-    RCO_n          <= not (and_rco_0 or and_rco_1);
-    RCO_no         <= RCO_n;
+    RCO_n  <= not (and_rco_0 or and_rco_1);
+    RCO_no <= RCO_n;
 
     CCO_no <= not ((not RCO_n) and ((not ENT_ni) and (not ENP_ni))
                 and (not CLK_i));
-    -- and_rco_common <= count_UD_bus(3) and count_UD_bus(2) and count_UD_bus(1)
-    --                     and count_UD_bus(0) and (not ENT_ni);
-    -- and_rco_0      <= UD_i and and_rco_common;
-    -- and_rco_1      <= (not UD_i) and and_rco_common;
-    -- RCO_n          <= not (and_rco_0 or and_rco_1);
-    -- RCO_no         <= RCO_n;
-
-    -- CCO_no <= not ((not RCO_n) and ((not ENT_ni) and (not ENP_ni)) and (not CLK_i));
 
     Q_o <= regs_array when OE_ni = '0' else "ZZZZ";
 

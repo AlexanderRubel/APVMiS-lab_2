@@ -43,34 +43,19 @@ entity top is
         ACLR_ni : in  std_logic;
         Data_i  : in  std_logic_vector(3 downto 0);
 
-        CCO_no_0  : out std_logic;
-        RCO_no_0  : out std_logic;
-        Q_o_0     : out unsigned(3 downto 0);
+        -- CCO_no_0  : out std_logic;
+        -- RCO_no_0  : out std_logic;
+        -- Q_o_0     : out unsigned(3 downto 0);
         CCO_no_1  : out std_logic;
         RCO_no_1  : out std_logic;
-        Q_o_1     : out std_logic_vector(3 downto 0)
+        -- Q_o_1     : out std_logic_vector(3 downto 0)
+        Q_ls_o_1 : out std_logic_vector(3 downto 0);
+        Q_ms_o_1 : out std_logic_vector(3 downto 0)
     );
 end top;
 
 architecture Behavioral of top is
     component counter is
-    port (
-        CLK_i   : in  std_logic;
-        OE_ni   : in  std_logic;
-        UD_i    : in  std_logic;
-        ENT_ni  : in  std_logic;
-        ENP_ni  : in  std_logic;
-        SCLR_ni : in  std_logic;
-        LOAD_ni : in  std_logic;
-        ACLR_ni : in  std_logic;
-        Data_i  : in  unsigned(3 downto 0);
-
-        CCO_no  : out std_logic;
-        RCO_no  : out std_logic;
-        Q_o     : out unsigned(3 downto 0)
-    );
-    end component;
-    component counter_struct is
         port (
             CLK_i   : in  std_logic;
             OE_ni   : in  std_logic;
@@ -80,15 +65,50 @@ architecture Behavioral of top is
             SCLR_ni : in  std_logic;
             LOAD_ni : in  std_logic;
             ACLR_ni : in  std_logic;
-            Data_i  : in  std_logic_vector(3 downto 0);
+            Data_i  : in  unsigned(3 downto 0);
 
             CCO_no  : out std_logic;
             RCO_no  : out std_logic;
             Q_o     : out std_logic_vector(3 downto 0)
         );
-        end component;
+    end component;
+    -- component counter_struct is
+    --     port (
+    --         CLK_i   : in  std_logic;
+    --         OE_ni   : in  std_logic;
+    --         UD_i    : in  std_logic;
+    --         ENT_ni  : in  std_logic;
+    --         ENP_ni  : in  std_logic;
+    --         SCLR_ni : in  std_logic;
+    --         LOAD_ni : in  std_logic;
+    --         ACLR_ni : in  std_logic;
+    --         Data_i  : in  std_logic_vector(3 downto 0);
+
+    --         CCO_no  : out std_logic;
+    --         RCO_no  : out std_logic;
+    --         Q_o     : out std_logic_vector(3 downto 0)
+    --     );
+    -- end component;
+    signal RCO_no_cascad : std_logic;
 begin
-    u_counter_0 : counter
+    -- u_counter_0 : counter
+    --     port map (
+    --         CLK_i   => CLK_i,
+    --         OE_ni   => OE_ni,
+    --         UD_i    => UD_i,
+    --         ENT_ni  => ENT_ni,
+    --         ENP_ni  => ENP_ni,
+    --         SCLR_ni => SCLR_ni,
+    --         LOAD_ni => LOAD_ni,
+    --         ACLR_ni => ACLR_ni,
+    --         Data_i  => unsigned(Data_i(3 downto 0)),
+    --         CCO_no  => CCO_no_0,
+    --         RCO_no  => RCO_no_0,
+    --         Q_o     => Q_o_0
+    --     );
+
+
+    u_counter_1 : counter
         port map (
             CLK_i   => CLK_i,
             OE_ni   => OE_ni,
@@ -99,24 +119,25 @@ begin
             LOAD_ni => LOAD_ni,
             ACLR_ni => ACLR_ni,
             Data_i  => unsigned(Data_i),
-            CCO_no  => CCO_no_0,
-            RCO_no  => RCO_no_0,
-            Q_o     => Q_o_0
+            -- CCO_no  => CCO_no_1,
+            RCO_no  => RCO_no_cascad,
+            Q_o     => Q_ls_o_1
         );
-    u_counter_1 : counter_struct
+
+    u_counter_2 : counter
         port map (
             CLK_i   => CLK_i,
             OE_ni   => OE_ni,
             UD_i    => UD_i,
-            ENT_ni  => ENT_ni,
+            ENT_ni  => RCO_no_cascad,
             ENP_ni  => ENP_ni,
             SCLR_ni => SCLR_ni,
             LOAD_ni => LOAD_ni,
+            Data_i  => "0000",
             ACLR_ni => ACLR_ni,
-            Data_i  => Data_i,
             CCO_no  => CCO_no_1,
             RCO_no  => RCO_no_1,
-            Q_o     => Q_o_1
+            Q_o     => Q_ms_o_1
         );
 
 end Behavioral;
